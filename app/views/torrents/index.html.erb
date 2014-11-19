@@ -1,0 +1,92 @@
+<div class="col-md-2">
+  <ul class="nav nav-pills nav-stacked">
+    <li class="active">
+      <a href="#all" data-toggle="pill" aria-controls="all">
+        All<span class="badge pull-right" id="badge_all"><%= @torrents.count %></span>
+      </a>
+    </li>
+    <li>
+      <a href="#transferring" data-toggle="pill" aria-controls="transferring">
+        Transferring<span class="badge pull-right" id="badge_transferring"><%= @transferring.count %></span>
+      </a>
+    </li>
+    <li>
+      <a href="#downloading" data-toggle="pill" aria-controls="downloading">
+        Downloading<span class="badge pull-right" id="badge_downloading"><%= @downloading.count %></span>
+      </a>
+    </li>
+    <li>
+      <a href="#seeding" data-toggle="pill" aria-controls="seeding">
+        Seeding<span class="badge pull-right" id="badge_seeding"><%= @seeding.count %></span>
+      </a>
+    </li>
+    <li>
+      <a href="#completed" data-toggle="pill" aria-controls="completed">
+        Completed<span class="badge pull-right" id="badge_completed"><%= @completed.count %></span>
+      </a>
+    </li>
+  </ul>
+  <hr />
+  <button class="btn btn-primary col-md-12" id="refresh_torrents_button"><span class="glyphicon glyphicon-refresh"></span>&nbsp;Refresh</button><br><br>
+  <hr />
+  <dl>
+    <dt>Torrents:</dt>
+    <dd><%= @torrents.count %></dd>
+    <dt>Total size:</dt>
+    <dd><% total = 0.0; @torrents.each {|t| total = total + t.size} %><%= (total / 1000000000).round(3) %> gb</dd>
+    <dt></dt>
+    <dd></dd>
+  </dl> 
+</div>
+<div class="tab-content">
+  <div class="tab-pane fade in active" id="all">
+    <div class="col-md-10">
+      <div class="panel panel-default">
+        <div class="panel-heading">All:</div>
+        <div class="panel-body" id="panel_all">
+          <%= render :partial => 'torrent_list', :locals => {:torrents => @torrents} %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-pane fade" id="transferring">
+    <div class="col-md-10">
+      <div class="panel panel-default">
+        <div class="panel-heading">Transferring:</div>
+        <div class="panel-body" id="panel_transferring">
+          <%= render :partial => 'torrent_list', :locals => {:torrents => @transferring} %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-pane fade" id="downloading">
+    <div class="col-md-10">
+      <div class="panel panel-default">
+        <div class="panel-heading">Downloading:</div>
+        <div class="panel-body" id="panel_downloading">
+          <%= render :partial => 'torrent_list', :locals => {:torrents => @downloading} %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-pane fade" id="seeding">
+    <div class="col-md-10">
+      <div class="panel panel-default">
+        <div class="panel-heading">Seeding:</div>
+        <div class="panel-body" id="panel_seeding">
+          <%= render :partial => 'torrent_list', :locals => {:torrents => @seeding} %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-pane fade" id="completed">
+    <div class="col-md-10">
+      <div class="panel panel-default">
+        <div class="panel-heading">Completed:</div>
+        <div class="panel-body" id="panel_completed">
+          <%= render :partial => 'torrent_list', :locals => {:torrents => @completed} %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

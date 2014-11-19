@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.1.4'
+gem 'rails', '~> 4.1.4'
 
 ### OpenShift Online changes:
 
@@ -20,15 +20,12 @@ group :development, :test do
   gem 'sqlite3'
   gem 'minitest'
   gem 'thor'
+  gem 'pry'
 end
 
 # Add support for the MySQL
 group :production, :mysql do
   gem 'mysql2'
-end
-
-group :production, :postgresql do
-  gem 'pg'
 end
 
 ### / OpenShift changes
@@ -66,3 +63,24 @@ gem 'spring',        group: :development
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+# Javascript runtime motherfucker.
+gem 'therubyracer'
+
+# How else will we talk to transmission? Write the code yourself you say? Fuck that.
+gem 'transmission_api'
+
+# Fucking background jobs...
+#gem 'redis-rails'
+gem 'delayed_job_active_record'
+gem 'daemons'
+
+# Need less for bootstrap
+gem 'less-rails'
+
+# Need bootstrap for the glory
+# Use the latest master branch that includes the glyphicon fix: https://github.com/seyhunak/twitter-bootstrap-rails/commit/a4ebd4d0aaebcee09e07901a597f1c3eee5a5aff
+gem 'twitter-bootstrap-rails',
+  :git => 'git://github.com/seyhunak/twitter-bootstrap-rails.git'
+
+# Gotta download shit somehow
+gem 'net-sftp'

@@ -12,5 +12,26 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require twitter/bootstrap
 //= require turbolinks
 //= require_tree .
+
+$(document).ready(function() {
+
+  $('#navbar_torrent_upload').submit(function() {
+    console.log("Submitting new torrent...");
+    $('#navbar_torrent_upload_submit').html('<img src="/assets/ajax-loader.gif">');
+    var valuesToSubmit = $(this).serialize();
+    $.post("/torrents", valuesToSubmit, function(result) {
+      if (result.created === "true") {
+        $('#navbar_torrent_upload_submit').html("Upload");
+        $('#navbar_torrent_upload_text_field').val("");
+      } else {
+        $('#navbar_torrent_upload_submit').html("Failure");
+        $('#navbar_torrent_upload_text_field').val(""); 
+      }; 
+    });
+    return false;
+  });
+
+});

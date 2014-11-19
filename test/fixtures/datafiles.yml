@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  upstream_location: MyString
+  local_location: MyString
+  percent_complete: 1.5
+
+two:
+  upstream_location: MyString
+  local_location: MyString
+  percent_complete: 1.5

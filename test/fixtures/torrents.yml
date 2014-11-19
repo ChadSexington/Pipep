@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  added_date: 2014-11-08 23:25:18
+  files: MyText
+  upstream_id: 1
+  finished: false
+  name: MyString
+  percent_complete: 1
+  d_rate: 1
+  u_rate: 1
+  size: 1
+
+two:
+  added_date: 2014-11-08 23:25:18
+  files: MyText
+  upstream_id: 1
+  finished: false
+  name: MyString
+  percent_complete: 1
+  d_rate: 1
+  u_rate: 1
+  size: 1

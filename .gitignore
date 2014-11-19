@@ -14,3 +14,12 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+/tmp/*.ignore
+/*.ignore
+
+# Ignore the configuration file
+# Add changes to /config/application.yml.sample instead
+/config/application.yml
+
+# Don't add the database details
+/config/database.yml

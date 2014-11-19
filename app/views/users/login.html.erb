@@ -1,0 +1,19 @@
+<h1>Whats the password, ho?</h1>
+<p>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      Login
+    </div>
+    <div class="panel-body">
+      <%= form_tag '/users/auth', :class => "form-inline" do %>
+        <div class="form-group">
+        <%= label_tag :username, "Username", :class => "control-label" %>
+          <%= text_field_tag :username, nil, :class => "form-control" %>&nbsp;&nbsp;
+        <%= label_tag :password, "Password", :class => "control-label" %>
+          <%= password_field_tag :password, nil, :class => "form-control" %>&nbsp;&nbsp;
+        <%= submit_tag "Login", :class => "btn btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</p>

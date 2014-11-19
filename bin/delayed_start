@@ -1,0 +1,1 @@
+RAILS_ENV=production bin/delayed_job --pool refresher:1 --pool downloads:4 --pool *:1 start
