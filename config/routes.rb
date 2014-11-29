@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   get 'login', to: 'users#login'
   get 'logout', to: 'users#logout'
   post 'users/auth', to: 'users#auth'
+  match "/delayed_job" => DelayedJobWeb, :anchor => false, via: [:get, :post]
 
   root 'users#login'
 

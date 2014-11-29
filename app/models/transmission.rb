@@ -8,12 +8,23 @@ class Transmission < ActiveRecord::Base
 
   def get_torrent(id)
     trans = get_connection
-    response = trans.find(id)
+    if trans
+      response = trans.find(id)
+    else
+      Rails.logger.error("Could not get torrent because a connection could not be established")
+      return false
+    end
+    response
   end
 
   def torrent_list
     trans = get_connection
-    trans.all
+    if trans
+      return trans.all
+    else
+      Rails.logger.error("Could not get torrent list because a connection could not be established")
+      return false 
+    end
   end
   
   # Sync torrents with backend server
@@ -21,6 +32,9 @@ class Transmission < ActiveRecord::Base
   def refresh_local_torrents
     changed = false
     list = self.torrent_list
+    if list == false
+      return false
+    end
     local_list = self.torrents
     # Add torrents if the backend server has them and we don't
     list.each do |upstream_torrent|
@@ -33,6 +47,7 @@ class Transmission < ActiveRecord::Base
                                :u_rate => upstream_torrent["rateUpload"],
                                :d_rate => upstream_torrent["rateDownload"],
                                :size => upstream_torrent["totalSize"],
+                               :ratio => upstream_torrent["uploadRatio"],
                                :url => "upstream"
                               )
         changed = true
@@ -62,7 +77,6 @@ class Transmission < ActiveRecord::Base
       downloaded_torrents.each do |t|
         if t.download
           if t.download.complete || t.download.started
-            Rails.logger.info("Skipping torrent #{name} because download already exists")
             next
           end
           # Need to have a way to check to see if a job is running for the download
@@ -81,12 +95,38 @@ class Transmission < ActiveRecord::Base
     response.parsed_response["result"] == "success"
   end
 
-  def get_connection
-    TransmissionApi::Client.new(
-      :username => self.username,
-      :password => self.password,
-      :url      => self.url
-    )
+  # Parameters:
+  #   fields => Should be an array of strings
+  def get_connection(fields = nil)
+    # If some jackass sent us anything but an array, fuckem and make it an array
+    if fields and fields.class != Array
+      string = fields
+      fields = Array.new
+      fields << string
+    end
+    begin
+      if fields
+        connection = TransmissionApi::Client.new(
+              :username => self.username,
+              :password => self.password,
+              :url      => self.url,
+              :fields   => fields + TransmissionApi::Client::TORRENT_FIELDS
+            )
+      else
+        connection = TransmissionApi::Client.new(
+              :username => self.username,
+              :password => self.password,
+              :url      => self.url
+            )
+      end
+    rescue ENETUNREACH => e
+      Rails.logger.error("Could not create connection to transmission backend: #{e.message}")
+      return false
+    rescue => e
+      Rails.logger.error("Could not create connection to transmission backend: #{e.message}")
+      return false
+    end
+    connection
   end
 
 end

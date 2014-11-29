@@ -23,3 +23,6 @@
 
 # Don't add the database details
 /config/database.yml
+
+# Don't add precompiled assets
+/public/assets/

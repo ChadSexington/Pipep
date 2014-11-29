@@ -1,0 +1,7 @@
+RAILS_ENV=production /var/www/html/pipep/bin/delayed_job stop
+RAILS_ENV=production bundle exec rake db:drop
+RAILS_ENV=production bundle exec rake db:create
+RAILS_ENV=production bundle exec rake db:migrate
+RAILS_ENV=production bundle exec rake jobs:clear
+RAILS_ENV=production ruby '/var/www/html/pipep/tmp/DATA'
+RAILS_ENV=production /var/www/html/pipep/bin/delayed_start

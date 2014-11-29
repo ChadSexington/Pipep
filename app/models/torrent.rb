@@ -4,6 +4,8 @@ class Torrent < ActiveRecord::Base
   has_one :download
 
   before_create :add_torrent_backend
+  before_save :validate_values
+  before_destroy :remove_torrent_backend
 
   validates_presence_of :url
 
@@ -28,7 +30,8 @@ class Torrent < ActiveRecord::Base
                "percentDone"=> self.percent_complete, 
                "rateDownload" => self.d_rate, 
                "rateUpload" => self.u_rate, 
-               "totalSize" => self.size
+               "totalSize" => self.size,
+               "uploadRatio" => self.ratio
               }
     if current == torrent
       return true
@@ -41,7 +44,8 @@ class Torrent < ActiveRecord::Base
                                :percent_complete => torrent["percentDone"],
                                :u_rate => torrent["rateUpload"],
                                :d_rate => torrent["rateDownload"],
-                               :size => torrent["totalSize"]
+                               :size => torrent["totalSize"],
+                               :ratio => torrent["uploadRatio"]
                               )
           return true
         else
@@ -55,7 +59,8 @@ class Torrent < ActiveRecord::Base
                                :percent_complete => torrent["percentDone"],
                                :u_rate => torrent["rateUpload"],
                                :d_rate => torrent["rateDownload"],
-                               :size => torrent["totalSize"]
+                               :size => torrent["totalSize"],
+                               :ratio => torrent["uploadRatio"]
                               )
         return true
       end
@@ -70,7 +75,8 @@ class Torrent < ActiveRecord::Base
      "percentDone" => self.percent_complete,
      "rateUpload" => self.u_rate,
      "rateDownload" => self.d_rate,
-     "totalSize" => self.size
+     "totalSize" => self.size,
+     "uploadRatio" => self.ratio
     }
   end
 
@@ -82,7 +88,8 @@ class Torrent < ActiveRecord::Base
                          :percent_complete => torrent["percentDone"],
                          :u_rate => torrent["rateUpload"],
                          :d_rate => torrent["rateDownload"],
-                         :size => torrent["totalSize"]
+                         :size => torrent["totalSize"],
+                         :ratio => torrent["uploadRatio"]
                         ) 
   end
 
@@ -107,6 +114,19 @@ private
       return false
     end
     self.refresh(false)
+  end
+ 
+  def remove_torrent_backend
+    transmission = Transmission.find(self.transmission_id)
+    c = transmission.get_connection
+    c.destroy(self.upstream_id)
+  end
+
+  def validate_values
+    if self.ratio.nil?
+      self.ratio == 0
+    end
+    true
   end
 
 end

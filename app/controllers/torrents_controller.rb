@@ -46,6 +46,7 @@ class TorrentsController < ApplicationController
 
   def create
     @torrent = Torrent.new(:url => torrent_params[:url], :transmission_id => 1)
+    Rails.logger.info @torrent.inspect
     if @torrent.save
       respond_to do |format|
         format.json { render :json => {:created => "true"} }

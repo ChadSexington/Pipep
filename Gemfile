@@ -67,12 +67,14 @@ gem 'spring',        group: :development
 gem 'therubyracer'
 
 # How else will we talk to transmission? Write the code yourself you say? Fuck that.
-gem 'transmission_api'
+gem 'transmission_api', 
+  :git => 'git://github.com/ChadSexington/TransmissionApi.git'
 
 # Fucking background jobs...
 #gem 'redis-rails'
 gem 'delayed_job_active_record'
 gem 'daemons'
+gem 'delayed_job_web'
 
 # Need less for bootstrap
 gem 'less-rails'

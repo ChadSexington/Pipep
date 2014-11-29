@@ -4,7 +4,17 @@ class Download < ActiveRecord::Base
 
   belongs_to :torrent
   has_many :datafiles
+  before_save :check_percent_complete
   after_create :start
+  after_destroy :remove_datafiles
+
+  def complete?
+    complete
+  end
+  
+  def complete
+    self.percent_complete >= 100.0
+  end
 
   def start
     self.update_attributes(:started => true)
@@ -12,10 +22,7 @@ class Download < ActiveRecord::Base
     self.get_files
     # Set up sftp connection and other variables
     torrent = Torrent.find(self.torrent_id)
-    dlog("Starting download for torrent #{torrent.name} with upstream id #{torrent.upstream_id}")
-    transmission = Transmission.find(torrent.transmission_id)
-    sftp = Net::SFTP.start(transmission.sftp_host, transmission.sftp_username, :password => transmission.sftp_password)
-    dlog("Started sftp connection")
+    dlog("Starting downloads for torrent #{torrent.name} with upstream id #{torrent.upstream_id}")
     local_download_dir = CONFIG[:download_dir]
 
     # Determine percentage of completion for each file
@@ -25,14 +32,13 @@ class Download < ActiveRecord::Base
     # Iterate through each file
     self.datafiles.each do |file|
       tree = file.local_location.split('/')
-      CONFIG[:download_dir].split('/').each {|dir| tree.delete(dir)}
+      local_download_dir.split('/').each {|dir| tree.delete(dir)}
 
       # If the file is not in a directory, just download it
       if tree.count == 1
-        dlog("File is in the root directory, downloading now :#{file.local_location}")
-        sftp.download!(file.upstream_location, file.local_location, :recursive => false)
-        dlog("Download completed.")
-        break 
+        dlog("Creating transfer job for #{file.name}")
+        file.transfer(torrent.transmission_id, percentage_of_each)
+        next 
       end
 
       dlog("Checking directory creation needs for #{tree[-1]}")
@@ -57,25 +63,11 @@ class Download < ActiveRecord::Base
           Dir.mkdir(dir)
         end
       end
-
-      # Download the file
-      dlog("Starting download to #{file.local_location} from #{file.upstream_location}.")
       
-      sftp.download!(file.upstream_location, file.local_location, :recursive => false)
-
-      # Update the download with the percentage of completion
-      self.update_attributes(:percent_complete => self.percent_complete + percentage_of_each)
-
-      dlog("Datafile #{file.name} finished")
-    end 
-
-    dlog("Download completed for #{torrent.name}")
-    # Ensure the sftp connection is closed
-    sftp.close_channel
-    torrent.update_attributes(:finished => true) 
-    self.update_attributes(:started => false, :complete => true, :percent_complete => 100.0) 
+      dlog("Creating transfer job for #{file.name}")
+      file.transfer(torrent.transmission_id, percentage_of_each)
+    end
   end
-  handle_asynchronously :start, :queue => 'downloads', :run_at => Proc.new { DateTime.now }
 
   def get_files
     t = Torrent.find(self.torrent_id)
@@ -101,6 +93,12 @@ class Download < ActiveRecord::Base
 
 private
 
+  def check_percent_complete
+    if self.percent_complete > 99.8 && self.percent_complete < 100.0
+      self.percent_complete = 100.0
+    end
+  end
+
   def dlog(message, level=:debug)
     log_string = "#{DateTime.now} | DLID: #{self.id} | "
     case level
@@ -113,4 +111,7 @@ private
     end
   end
 
+  def remove_datafiles
+    self.datafiles.destroy_all
+  end
 end

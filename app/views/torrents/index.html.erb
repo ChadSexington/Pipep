@@ -44,7 +44,9 @@
       <div class="panel panel-default">
         <div class="panel-heading">All:</div>
         <div class="panel-body" id="panel_all">
-          <%= render :partial => 'torrent_list', :locals => {:torrents => @torrents} %>
+          <ul class="list-group">
+            <%= render :partial => 'torrent_list', :locals => {:torrents => @torrents} %>
+          </ul>
         </div>
       </div>
     </div>
@@ -54,7 +56,9 @@
       <div class="panel panel-default">
         <div class="panel-heading">Transferring:</div>
         <div class="panel-body" id="panel_transferring">
-          <%= render :partial => 'torrent_list', :locals => {:torrents => @transferring} %>
+          <ul class="list-group">
+            <%= render :partial => 'torrent_list', :locals => {:torrents => @transferring} %>
+          </ul>
         </div>
       </div>
     </div>
@@ -64,7 +68,9 @@
       <div class="panel panel-default">
         <div class="panel-heading">Downloading:</div>
         <div class="panel-body" id="panel_downloading">
-          <%= render :partial => 'torrent_list', :locals => {:torrents => @downloading} %>
+          <ul class="list-group">
+            <%= render :partial => 'torrent_list', :locals => {:torrents => @downloading} %>
+          </ul>
         </div>
       </div>
     </div>
@@ -74,7 +80,9 @@
       <div class="panel panel-default">
         <div class="panel-heading">Seeding:</div>
         <div class="panel-body" id="panel_seeding">
-          <%= render :partial => 'torrent_list', :locals => {:torrents => @seeding} %>
+          <ul class="list-group">
+            <%= render :partial => 'torrent_list', :locals => {:torrents => @seeding} %>
+          </ul>
         </div>
       </div>
     </div>
@@ -84,7 +92,10 @@
       <div class="panel panel-default">
         <div class="panel-heading">Completed:</div>
         <div class="panel-body" id="panel_completed">
-          <%= render :partial => 'torrent_list', :locals => {:torrents => @completed} %>
+          <ul class="list-group">
+            <%= render :partial => 'torrent_list', :locals => {:torrents => @completed} %>
+          </ul>
+  
         </div>
       </div>
     </div>
